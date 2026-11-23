@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Governance ab der ersten App</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;600&family=Newsreader:opsz,wght@6..72,500&display=swap">
+<link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+<main>
+
+<header style="display:grid;gap:0.8rem">
+  <p class="eyebrow">Copilot Managed Runtime · Lektion 3 · ca. 15 Minuten</p>
+  <h1>Governance ab der ersten App</h1>
+  <p class="lede">Ein Entwickler sagt: «Meine App braucht X.» Nach dieser Lektion weisst du, ob die Default-Governance X erlaubt, und falls nicht, welchen Hebel ein Admin wo umlegen muss.</p>
+</header>
+
+<section class="goal">
+  <p><strong>Dein Gewinn heute:</strong> Du kennst die Default Environment Group mit ihren fünf Hebeln und ihren Standardwerten und ordnest konkrete Anforderungen dem richtigen Hebel zu.</p>
+</section>
+
+<section>
+  <h2>Aufwärmen aus Lektion 2</h2>
+  <div class="calc-task" data-answer="1" data-tol="0.01">
+    <label for="w1">Ein App-Start lädt 8 Assets und macht 2 Daten-Calls. Wie viele Credits kostet dieser eine Start?</label>
+    <div class="answer-row"><input id="w1" inputmode="decimal" autocomplete="off"><button class="btn">Prüfen</button></div>
+    <p class="verdict" aria-live="polite"></p>
+    <p class="explain" hidden>(8 + 2) × 0.1 = <strong>1 Credit</strong>, also 1 US-Cent.</p>
+  </div>
+</section>
+
+<section>
+  <h2>Das Modell: zwei Behälter</h2>
+  <ul class="tight">
+    <li><strong>Personal Environment:</strong> Jeder Maker landet beim ersten Bauen automatisch in einem eigenen, isolierten Environment. Diese Routing-Regel ist permanent: Man kann sie weder abschalten noch löschen.<a class="cite" href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/governance?view=o365-worldwide">[1]</a></li>
+    <li><strong>Default Environment Group:</strong> Sie enthält die Regeln, die jede App erbt. Microsoft verwaltet sie, ihr Geltungsbereich ist «Everyone», löschen lässt sie sich nicht. Sie entsteht mit der ersten App oder wenn ein Admin die CMR-Verwaltung zum ersten Mal öffnet.<a class="cite" href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/governance?view=o365-worldwide">[1]</a></li>
+  </ul>
+  <p>Microsoft nennt die Defaults «restrictive on day one». Wer eine von Microsoft verwaltete Regel editiert, bekommt dafür <strong>keine automatischen Updates von Microsoft mehr</strong>. Ob man das rückgängig machen kann, sagt die Doku nicht.<a class="cite" href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/governance?view=o365-worldwide">[1]</a></p>
+</section>
+
+<section>
+  <h2>Die fünf Hebel und ihre Standardwerte</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Hebel</th><th>Standard</th><th>Typischer Anlass zum Ändern</th></tr>
+    <tr><td><strong>Connectors und MCP-Server</strong> (Advanced Connector Policies, ACP)</td><td>19 Microsoft-Connectors mit reiner Entra-Anmeldung, etwa SharePoint, Teams, Outlook, Excel, Dataverse und Power BI. Dazu 12 Microsoft-MCP-Server. Drittanbieter- und Custom-Connectors sind ausgeschlossen.</td><td>Ein Drittsystem oder ein eigener Connector wird gebraucht</td></tr>
+    <tr><td><strong>Gesperrte Aktionen</strong> in erlaubten Connectors</td><td>Offene HTTP-Requests (SharePoint, Teams, Outlook u. a.), «Run script» (Excel), «Perform an unbound/bound action» (Dataverse)</td><td>Die App braucht genau eine dieser Aktionen</td></tr>
+    <tr><td><strong>Sharing</strong></td><td>Teilen in der ganzen Organisation: an. Mit Gästen: aus. Eine App ist privat, bis sie geteilt wird.</td><td>Externe Partner sollen die App nutzen</td></tr>
+    <tr><td><strong>Content Security Policy (CSP)</strong></td><td>Wird durchgesetzt, unter anderem mit <code>connect-src 'self'</code> und <code>script-src 'self'</code>. Alternativ gibt es einen Report-only-Modus.</td><td>Der Browser soll direkt eine externe API aufrufen</td></tr>
+    <tr><td><strong>Quell- und Build-Wege</strong></td><td>App-Erstellung per CLI: aus. Deployment extern gebauter Artefakte: aus.</td><td>Profi-Entwickler wollen <code>ms</code> CLI oder eine eigene GitHub-Pipeline nutzen</td></tr>
+  </table></div>
+  <p class="note">Quellen: <a href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/governance?view=o365-worldwide">Review default governance settings</a>, <a href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/?view=o365-worldwide">Admin overview</a> (dort steht, dass der CLI-Weg standardmässig aus ist).</p>
+</section>
+
+<section>
+  <h2>Was der Host ohnehin erzwingt</h2>
+  <ul class="tight">
+    <li><strong>Sandbox:</strong> Der App-Code läuft in einem sandboxed iframe. Die Tokens des Hosts sind für den App-Code nicht erreichbar.<a class="cite" href="https://learn.microsoft.com/en-us/microsoft-365/copilot-managed-runtime/managed-runtime-security-governance?view=o365-worldwide">[2]</a></li>
+    <li><strong>Connector-Calls laufen über SDK und Host.</strong> Dort werden Anmeldung und Governance zentral angewendet. Für Connectors brauchst du deshalb keinen CSP-Eintrag. Den braucht nur, wer direkt aus dem Browser eine fremde Adresse aufruft.<a class="cite" href="https://learn.microsoft.com/en-us/microsoft-365/copilot-managed-runtime/managed-runtime-security-governance?view=o365-worldwide">[2]</a></li>
+    <li><strong>Zwei Schlüssel zum Öffnen:</strong> Wer eine App nutzen will, muss in der Sicherheitsgruppe des Environments sein <em>und</em> Zugriff auf die App haben. Teilen umgeht die Sicherheitsgruppe nicht.<a class="cite" href="https://learn.microsoft.com/en-us/microsoft-365/copilot-managed-runtime/managed-runtime-security-governance?view=o365-worldwide">[2]</a></li>
+    <li><strong>Aufsicht:</strong> Im Inventar können Admins eine App blockieren. Nutzer kommen dann nicht mehr hinein, App und Daten bleiben erhalten. Audit-Events landen in Purview unter dem Record Type <code>CopilotManagedRuntime</code>.<a class="cite" href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/security-compliance?view=o365-worldwide">[3]</a></li>
+  </ul>
+  <p class="note">Offen: Die Architektur-Seite nennt Conditional Access und DLP als Laufzeitschutz des Hosts, die Sicherheitsseiten beschreiben beides aber nicht. Auch die Admin-Pfade unterscheiden sich zwischen den Seiten (Apps › Settings › Environment groups gegenüber Settings › App settings). Im Portal prüfen.</p>
+</section>
+
+<section>
+  <h2>Fälle zuordnen</h2>
+  <p class="note">Für jeden Fall: Was muss ein Admin tun? Kommt mehr als ein Hebel in Frage, ist der gesucht, der das Problem direkt löst.</p>
+  <div class="quiz">
+    <div class="quiz-q" data-correct="0">
+      <p>1. Die App ruft per <code>fetch()</code> direkt aus dem Browser eine öffentliche Wetter-API auf. Der Aufruf scheitert.</p>
+      <div class="opts">
+        <button class="opt">Origin in connect-src eintragen</button>
+        <button class="opt">Connector in ACP aufnehmen</button>
+        <button class="opt">Gastfreigabe im Sharing aktivieren</button>
+        <button class="opt">CLI-Erstellung im PPAC freischalten</button>
+      </div>
+      <p class="explain" hidden>Direkte Browser-Requests erlaubt der Default-CSP nur zur eigenen Origin (<code>connect-src 'self'</code>). Der Admin trägt die Wetter-API in <code>connect-src</code> ein. Wildcards sollte man dabei vermeiden.</p>
+    </div>
+    <div class="quiz-q" data-correct="2">
+      <p>2. Die App soll über den SharePoint-Connector Einträge einer Liste lesen.</p>
+      <div class="opts">
+        <button class="opt">Policy per Edit übernehmen</button>
+        <button class="opt">Origin in connect-src eintragen</button>
+        <button class="opt">Nichts, SharePoint ist erlaubt</button>
+        <button class="opt">Gastfreigabe im Sharing aktivieren</button>
+      </div>
+      <p class="explain" hidden>SharePoint gehört zu den 19 Standard-Connectors. Der Call läuft über SDK und Host, also ist auch kein CSP-Eintrag nötig.</p>
+    </div>
+    <div class="quiz-q" data-correct="1">
+      <p>3. Die App nutzt im SharePoint-Connector die Aktion «Send an HTTP request to SharePoint».</p>
+      <div class="opts">
+        <button class="opt">Nichts, SharePoint ist erlaubt</button>
+        <button class="opt">Aktion in ACP freigeben</button>
+        <button class="opt">Origin in connect-src eintragen</button>
+        <button class="opt">CLI-Erstellung im PPAC freischalten</button>
+      </div>
+      <p class="explain" hidden>Der Connector ist erlaubt, offene HTTP-Aktionen sind aber standardmässig gesperrt. Der Admin muss die Aktion in den Advanced Connector Policies freigeben. Danach bekommt diese Regel keine automatischen Updates von Microsoft mehr.</p>
+    </div>
+    <div class="quiz-q" data-correct="3">
+      <p>4. Ein externer Partner mit Gastkonto im Tenant soll die App nutzen.</p>
+      <div class="opts">
+        <button class="opt">Connector in ACP aufnehmen</button>
+        <button class="opt">Origin in connect-src eintragen</button>
+        <button class="opt">CLI-Erstellung im PPAC freischalten</button>
+        <button class="opt">Gastfreigabe im Sharing aktivieren</button>
+      </div>
+      <p class="explain" hidden>Teilen mit Gästen ist standardmässig aus. Achtung: Ist die Gastfreigabe an, umfasst «Organization-only» auch Gäste.</p>
+    </div>
+    <div class="quiz-q" data-correct="1">
+      <p>5. Ein Entwickler will aus VS Code mit <code>ms app deploy</code> deployen. Schon das Erstellen der App scheitert.</p>
+      <div class="opts">
+        <button class="opt">Policy per Edit übernehmen</button>
+        <button class="opt">CLI-Erstellung im PPAC freischalten</button>
+        <button class="opt">Origin in connect-src eintragen</button>
+        <button class="opt">Gastfreigabe im Sharing aktivieren</button>
+      </div>
+      <p class="explain" hidden>Im Power Platform Admin Center unter Copilot › Settings › Managed apps die Einstellung «Allow app creation with the Copilot Managed Runtime command line interface (CLI)» für die Environment Group oder das Environment aktivieren.</p>
+    </div>
+    <div class="quiz-q" data-correct="0">
+      <p>6. Eine Person hat die App geteilt bekommen und ist lizenziert, kann sie aber trotzdem nicht öffnen. Wahrscheinlichster Grund?</p>
+      <div class="opts">
+        <button class="opt">Fehlt in der Environment-Sicherheitsgruppe</button>
+        <button class="opt">CSP blockiert den App-Start</button>
+        <button class="opt">Connector fehlt in ACP</button>
+        <button class="opt">Gastfreigabe ist standardmässig aus</button>
+      </div>
+      <p class="explain" hidden>Es braucht beides: Mitgliedschaft in der Sicherheitsgruppe des Environments und Zugriff auf die App. Teilen allein reicht nicht.</p>
+    </div>
+    <div class="quiz-q" data-correct="2">
+      <p>7. Die Security entdeckt eine problematische App. Sie soll sofort gestoppt werden, ohne Daten zu verlieren.</p>
+      <div class="opts">
+        <button class="opt">Default Environment Group löschen</button>
+        <button class="opt">Routing-Regel für Maker deaktivieren</button>
+        <button class="opt">App im Inventar blockieren</button>
+        <button class="opt">Spending Policy des Owners stoppen</button>
+      </div>
+      <p class="explain" hidden>Blockieren im Inventar sperrt die Nutzer aus und behält App und Daten. Die Default Group und die Routing-Regel lassen sich gar nicht löschen bzw. abschalten.</p>
+    </div>
+    <div class="quiz-q" data-correct="3">
+      <p>8. Was ist der Preis, wenn man eine von Microsoft verwaltete Regel editiert?</p>
+      <div class="opts">
+        <button class="opt">Zusätzliche Credits pro App-Start</button>
+        <button class="opt">Alle Apps werden neu gebaut</button>
+        <button class="opt">Maker verlieren ihr Personal Environment</button>
+        <button class="opt">Keine automatischen Microsoft-Updates mehr</button>
+      </div>
+      <p class="explain" hidden>Die Regel gehört dann dir. Neue Connectors oder Anpassungen, die Microsoft einführt, kommen nicht mehr automatisch an.</p>
+    </div>
+    <p class="score" aria-live="polite"></p>
+  </div>
+</section>
+
+<section>
+  <h2>Abruf-Übung</h2>
+  <p>Zähl die fünf Hebel der Default Environment Group auf, jeweils mit ihrem Standardwert. Nicht hochscrollen.</p>
+  <label for="recall3" class="note">Deine Antwort (wird nicht gespeichert)</label>
+  <textarea id="recall3"></textarea>
+  <button class="btn" data-reveal="model3">Lösung zeigen</button>
+  <div id="model3" class="reveal" hidden>
+    <ul class="tight">
+      <li>Connectors/MCP (ACP): 19 Microsoft-Connectors, 12 MCP-Server, kein Drittanbieter</li>
+      <li>Gesperrte Aktionen: HTTP, Run script, unbound/bound action</li>
+      <li>Sharing: Organisation an, Gäste aus, privat bis geteilt</li>
+      <li>CSP: durchgesetzt, nur eigene Origin</li>
+      <li>CLI-Erstellung und externe Artefakte: aus</li>
+    </ul>
+  </div>
+</section>
+
+<section class="source">
+  <p class="eyebrow">Primärquelle zum Lesen (15 Minuten)</p>
+  <p><a href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/governance?view=o365-worldwide">Review default governance settings for apps</a> auf Microsoft Learn. Wenn du bestehende Power-Platform-Kunden berätst, lies den Abschnitt «If you're an existing Power Platform customer» zum Zusammenspiel mit vorhandenem Routing besonders genau.</p>
+</section>
+
+<footer>
+  <p><strong>Fragen?</strong> Frag mich im Chat, zum Beispiel: «Wie verhält sich das bei einem Kunden, der schon Environment Routing nutzt?» oder «Was ist der Unterschied zwischen ACP und DLP-Policies?»</p>
+  <p>Zurück: <a href="0002-laufzeitkosten-hochrechnen.html">Lektion 2</a> · Nachschlagen: <a href="../reference/0002-governance-defaults.html">Governance-Defaults</a>, <a href="../reference/0001-landkarte.html">Landkarte CMR</a></p>
+  <p class="note">Quellen: [1] Learn: Review default governance settings · [2] Learn: Security and governance in the managed runtime · [3] Learn: Manage security and compliance (Preview). Alle Stand 17.11.2026.</p>
+</footer>
+
+</main>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

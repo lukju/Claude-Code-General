@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Governance-Defaults CMR</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;600&family=Newsreader:opsz,wght@6..72,500&display=swap">
+<link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+<main>
+<header style="display:grid;gap:0.6rem">
+  <p class="eyebrow">Referenz · Stand 17.11.2026</p>
+  <h1>Governance-Defaults</h1>
+  <p class="lede">Default Environment Group von Copilot Managed Runtime: Werte, Pfade, Audit. Quelle: <a href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/governance?view=o365-worldwide">Learn: Governance</a>, <a href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/security-compliance?view=o365-worldwide">Learn: Security &amp; compliance</a>.</p>
+</header>
+
+<section>
+  <h2>Grundregeln</h2>
+  <ul class="tight">
+    <li>Default Environment Group: von Microsoft verwaltet, Scope «Everyone», nicht löschbar.</li>
+    <li>Routing in Personal Environments: permanent, nicht abschaltbar.</li>
+    <li>Microsoft-Regel editieren = keine automatischen Microsoft-Updates mehr für diese Regel.</li>
+    <li>Öffnen einer App = Mitglied der Environment-Sicherheitsgruppe <em>und</em> App-Zugriff.</li>
+    <li>Ändern erfordert eine Manage-Rolle. Read-only-Rollen sehen die Einstellungen nur.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Standardwerte</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Einstellung</th><th>Standard</th></tr>
+    <tr><td>Connectors</td><td>19 Microsoft-Connectors mit reiner Entra-Anmeldung: SharePoint, OneDrive for Business, Word Online, OneNote, Teams, Office 365 Outlook, Office 365 Groups Mail, Office 365 Users, Office 365 Groups, Planner, To Do, Bookings, Forms, Excel Online, Dataverse, Power BI, Azure Data Explorer, Viva Engage, Azure DevOps</td></tr>
+    <tr><td>Gesperrte Aktionen</td><td>Offene HTTP-Requests (SharePoint, Teams, Outlook, O365 Users/Groups/Groups Mail, Azure DevOps) · Run script (Excel, Office Scripts) · Perform an unbound/bound action (Dataverse)</td></tr>
+    <tr><td>Ausgeschlossen</td><td>Preview-, Deprecated-, Flow-only-, Drittanbieter- und Custom-Connectors</td></tr>
+    <tr><td>MCP-Server</td><td>12 Microsoft-Server, darunter Power Apps MCP, Work IQ, Fabric MCP, Learn Docs MCP</td></tr>
+    <tr><td>Sharing</td><td>Organisation: an · Gäste: aus · App privat, bis sie geteilt wird</td></tr>
+    <tr><td>CSP</td><td>Durchgesetzt (Report-only möglich)</td></tr>
+    <tr><td>App-Erstellung per CLI</td><td>aus</td></tr>
+    <tr><td>Externe Artefakte deployen</td><td>aus (extern gebaute Artefakte umgehen den Microsoft-Build; die Validierung liegt dann bei dir)</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>CSP-Defaults</h2>
+  <div class="formula">default-src 'self' · script-src 'self' &lt;platform&gt; · style-src 'self' 'unsafe-inline'<br>connect-src 'self' · img-src 'self' data: · media-src 'self' data: · font-src 'self'<br>frame-src 'self' · child-src 'none' · worker-src 'none' · object-src 'self' data:<br>form-action 'none' · base-uri 'self' · manifest-src 'none' · frame-ancestors 'self' &lt;platform&gt;</div>
+  <p class="note">Eigene Werte werden mit den Defaults zusammengeführt. Ein Default von <code>'none'</code> wird dabei ersetzt. Keine Wildcards und kein <code>'unsafe-inline'</code> für Scripts. Connector-Calls brauchen keinen CSP-Eintrag.</p>
+</section>
+
+<section>
+  <h2>Wo man es einstellt</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Was</th><th>Pfad</th></tr>
+    <tr><td>Environment Groups, Sharing, Connectors</td><td>M365 Admin Center › Apps › Settings › Environment groups (eine andere Seite nennt Settings › App settings)</td></tr>
+    <tr><td>CLI-Erstellung, externe Artefakte</td><td>Power Platform Admin Center › Copilot › Settings › Managed apps, oder Manage › Environment groups › Rules</td></tr>
+    <tr><td>App blockieren</td><td>M365 Admin Center › Apps › All apps (Inventar) › Block</td></tr>
+    <tr><td>Audit</td><td>Purview, Record Type <code>CopilotManagedRuntime</code> (519), z. B. <code>CreatedCopilotManagedRuntimeApp</code>, <code>DeployedCopilotManagedRuntimeApp</code>, <code>AdminSetQuarantineStateCopilotManagedRuntimeApp</code></td></tr>
+  </table></div>
+  <p class="note">Zur Lektion: <a href="../lessons/0003-governance-ab-der-ersten-app.html">Governance ab der ersten App</a></p>
+</section>
+</main>
+</body>
+</html>

@@ -16,6 +16,12 @@ Stand: 23.11.2026. Die Plattform ändert sich schnell; Microsoft Learn ist die m
   Bauen vs. Ausführen, Copilot Credits (0.1 Credit pro API-Call), Power Apps Premium, E3/E5. Use for: Kostenrechnung, Beratung.
 - [Manage licensing and Copilot Credits](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/licensing-credits?view=o365-worldwide)
   Spending Policies einrichten, Kostenbeispiele. Use for: Admin-Praxis, Kostenschätzung.
+- [Review default governance settings for apps](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/governance?view=o365-worldwide)
+  Default Environment Group, alle Standardwerte (Connectors, gesperrte Aktionen, Sharing, CSP), CLI-Freigabe, Zusammenspiel mit bestehendem Power-Platform-Routing. Use for: Governance, Lektion 3.
+- [Security and governance in the managed runtime](https://learn.microsoft.com/en-us/microsoft-365/copilot-managed-runtime/managed-runtime-security-governance?view=o365-worldwide)
+  Was der Host erzwingt (Sandbox-iframe, CSP, Connector-Pfad über Host) vs. was Admins steuern. Use for: Sicherheitsargumentation gegenüber Kunden.
+- [Manage security and compliance (Preview)](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/security-compliance?view=o365-worldwide)
+  Sharing, Sicherheitsgruppe, CSP, ACP, Purview-Audit (Record Type CopilotManagedRuntime). Use for: Compliance, Audit.
 - [Build apps with the Copilot Managed Runtime SDK](https://learn.microsoft.com/en-us/microsoft-365/managed-apps/developer/?view=o365-worldwide)
   SDK-Übersicht für Entwickler. Use for: Dev-Lektionen.
 - [Quickstart: Create an app with the SDK (CLI)](https://learn.microsoft.com/en-us/microsoft-365/copilot-managed-runtime/developer/apps/quickstart-managed-apps-cli?view=o365-worldwide)
@@ -50,5 +56,6 @@ Stand: 23.11.2026. Die Plattform ändert sich schnell; Microsoft Learn ist die m
 
 - Kein offizielles Video oder Learn-Modul (Training-Pfad) gefunden.
 - Kein CMR-spezifisches Community-Forum verifiziert.
-- Sicherheitsdetails des Hosts noch nicht gelesen: [How the managed host secures apps](https://learn.microsoft.com/en-us/microsoft-365/copilot-managed-runtime/managed-runtime-security-governance).
+- Conditional Access und DLP: in der Architektur erwähnt, aber nirgends im Detail beschrieben.
+- Datenresidenz und Tenant-Isolation des Hosts: nicht dokumentiert gefunden.
 - Offizielle Bestätigung des GA-Status (MC1558033) fehlt noch.
