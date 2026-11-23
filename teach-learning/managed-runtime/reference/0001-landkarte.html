@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Landkarte CMR</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;600&family=Newsreader:opsz,wght@6..72,500&display=swap">
+<link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+<main>
+<header style="display:grid;gap:0.6rem">
+  <p class="eyebrow">Referenz · Stand 23.11.2026</p>
+  <h1>Landkarte Copilot Managed Runtime</h1>
+  <p class="lede">Wer macht was wo, und wer zahlt. Quelle: Microsoft Learn, verlinkt pro Abschnitt.</p>
+</header>
+
+<section>
+  <h2>Rollen und Orte</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Rolle</th><th>Wo</th><th>Was</th></tr>
+    <tr><td>Nutzer</td><td><code>managedapps.cloud.microsoft</code></td><td>Apps finden und öffnen</td></tr>
+    <tr><td>Maker / Business User</td><td>Copilot Cowork, Copilot Code (Cloud-Session)</td><td>App im Chat beschreiben</td></tr>
+    <tr><td>Maker</td><td>Copilot Studio › Apps</td><td>Planen, Preview, Publish, Share</td></tr>
+    <tr><td>Profi-Entwickler</td><td><code>ms</code> CLI (<code>@microsoft/cmr-cli</code>), SDK (<code>@microsoft/cmr-apps</code>)</td><td>Scaffold, Code, Deploy</td></tr>
+    <tr><td>Admin</td><td>M365 Admin Center › Apps › All apps</td><td>Inventar, Governance, Health, Kosten</td></tr>
+  </table></div>
+  <p class="note"><a href="https://learn.microsoft.com/en-us/microsoft-365/copilot-managed-runtime/overview?view=o365-worldwide">Learn: Overview</a></p>
+</section>
+
+<section>
+  <h2>Baupfade und Default</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Pfad</th><th>Default</th><th>Steuerung</th></tr>
+    <tr><td>Copilot Cowork</td><td>an</td><td>Setting «Build apps in Copilot», auf Gruppen einschränkbar</td></tr>
+    <tr><td>Copilot Studio</td><td>an</td><td><code>pac admin update-tenant-settings</code>, Security Groups</td></tr>
+    <tr><td>Copilot Code</td><td>nur mit Policy</td><td>Spending Policy für Copilot Code</td></tr>
+    <tr><td>CLI + SDK</td><td><strong>aus</strong></td><td>Admin-Freigabe nötig</td></tr>
+    <tr><td>Lovable</td><td>Setup nötig</td><td>Eigene Konfiguration</td></tr>
+  </table></div>
+  <p class="note"><a href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/?view=o365-worldwide">Learn: Admin overview</a></p>
+</section>
+
+<section>
+  <h2>Governance ab der ersten App</h2>
+  <ul class="tight">
+    <li><strong>Personal Environment</strong> pro Maker, automatisch, Policies aktiv.</li>
+    <li><strong>Default Environment Group</strong>, von Microsoft verwaltet: erlaubte Connectors und MCP-Server, Sharing, externe Inhalte. Admin kann sie übernehmen.</li>
+    <li><strong>Host zur Laufzeit:</strong> Entra-Login, Conditional Access, DLP, Sharing-Limits.</li>
+    <li>Gleiche Basis wie Power Platform Managed Environments.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Abrechnung</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Tätigkeit</th><th>Voraussetzung</th></tr>
+    <tr><td>Bauen in Cowork / Code</td><td>Copilot-Lizenz + Copilot Credits (Spending Policy)</td></tr>
+    <tr><td>Bauen in Copilot Studio</td><td>Copilot Credits über Studio-Billing</td></tr>
+    <tr><td>Bauen mit CLI</td><td>keine Lizenz</td></tr>
+    <tr><td>Ausführen (auch lokal)</td><td>Power Apps Premium <em>oder</em> Spending Policy mit CMR</td></tr>
+  </table></div>
+  <ul class="tight">
+    <li>0.1 Credit pro API-Call; US$1 = 100 Credits ≈ 1000 Calls. Jedes statische Asset beim Start zählt als Call.</li>
+    <li>E3/E5-Power-Apps-Rechte und Copilot-Lizenz decken das Ausführen <strong>nicht</strong>.</li>
+    <li>Premium wird vor Credits verbraucht. Policies sind Limits, keine Vorauszahlung. Keine Policy pro App.</li>
+  </ul>
+  <p class="note"><a href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/licensing-faq?view=o365-worldwide">Learn: Licensing FAQ</a></p>
+</section>
+
+<section>
+  <h2>Projekt-Artefakte</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Datei</th><th>Zweck</th></tr>
+    <tr><td><code>ms.config.json</code></td><td>App-ID, Environment, Connectors. Nicht von Hand ändern.</td></tr>
+    <tr><td><code>generated/</code></td><td>Typisierte Models und Services aus <code>ms app add data-source</code></td></tr>
+    <tr><td>Git-Repo</td><td>Single Source of Truth, Builds aus Commits</td></tr>
+  </table></div>
+  <p class="note"><a href="https://learn.microsoft.com/en-us/microsoft-365/copilot-managed-runtime/architecture?view=o365-worldwide">Learn: Architecture</a> · Zur Lektion: <a href="../lessons/0001-eine-runtime-viele-wege.html">Eine Runtime, viele Wege</a></p>
+</section>
+</main>
+</body>
+</html>

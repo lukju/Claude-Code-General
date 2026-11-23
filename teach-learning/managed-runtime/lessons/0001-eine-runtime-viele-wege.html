@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Eine Runtime, viele Wege</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;600&family=Newsreader:opsz,wght@6..72,500&display=swap">
+<link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+<main>
+
+<header style="display:grid;gap:0.8rem">
+  <p class="eyebrow">Copilot Managed Runtime · Lektion 1 · ca. 10 Minuten</p>
+  <h1>Eine Runtime, viele Wege hinein</h1>
+  <p class="lede">Bevor du die erste App baust, brauchst du das mentale Modell: Wer baut wo, wo läuft es, wer governt es, und wer bezahlt was.</p>
+</header>
+
+<section class="goal">
+  <p><strong>Dein Gewinn heute:</strong> Du kannst Copilot Managed Runtime (CMR) in drei Sätzen erklären und jede Frage einer von vier Ebenen zuordnen: <em>Bauen</em>, <em>Ausführen</em>, <em>Governen</em>, <em>Abrechnen</em>.</p>
+</section>
+
+<section>
+  <h2>Was CMR ist</h2>
+  <p>CMR ist ein von Microsoft betriebener Host für interne Line-of-Business-Apps im Microsoft-365-Tenant. Jede App übernimmt ab dem Moment ihrer Erstellung die Governance-, Sicherheits- und Compliance-Vorgaben der Organisation.<a class="cite" href="https://learn.microsoft.com/en-us/microsoft-365/copilot-managed-runtime/overview?view=o365-worldwide">[1]</a></p>
+  <p>Technisch ist eine CMR-App eine TypeScript- oder JavaScript-Single-Page-App. Den Rest liefert der Host: Anmeldung über Microsoft Entra, Laden der App und Durchsetzen von Conditional Access, DLP und Sharing-Limits zur Laufzeit.<a class="cite" href="https://learn.microsoft.com/en-us/microsoft-365/copilot-managed-runtime/architecture?view=o365-worldwide">[2]</a></p>
+  <p class="note">Status: Public Preview seit 25.09.2026.<a class="cite" href="https://blogs.microsoft.com/blog/2026/09/25/introducing-the-new-copilot-with-home-code-and-autopilot/">[3]</a> Eine Drittquelle meldet GA per Message Center MC1558033 vom 18.11.2026; das ist auf einer Microsoft-Seite noch nicht bestätigt.<a class="cite" href="https://mwpro.co.uk/blog/2026/11/18/mc1558033-microsoft-365-copilot-managed-runtime-reaches-general-availability-and-expands-app-building-in-copilot-cowork/">[4]</a></p>
+</section>
+
+<section>
+  <h2>Das Bild im Kopf</h2>
+  <p>Fünf Werkzeuge zum Bauen, aber nur ein Ergebnis. Das Werkzeug ändert das Bauerlebnis, nicht wie die App gehostet oder governt wird.<a class="cite" href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/?view=o365-worldwide">[5]</a></p>
+  <div class="flow" role="img" aria-label="Fünf Baupfade führen zum selben CMR-Host. Nutzer öffnen Apps im Portal, Admins governen im Admin Center.">
+    <p class="eyebrow">Bauen</p>
+    <div class="row">
+      <div class="box"><strong>Copilot Cowork</strong><span>App im Chat beschreiben</span></div>
+      <div class="box"><strong>Copilot Studio</strong><span>Maker, mehr Kontrolle</span></div>
+      <div class="box"><strong>Copilot Code</strong><span>AI-Coding-Agent</span></div>
+      <div class="box"><strong><code>ms</code> CLI + SDK</strong><span>Code-first für Profis</span></div>
+      <div class="box"><strong>Lovable</strong><span>externer Builder</span></div>
+    </div>
+    <p class="arrow">↓ alle erzeugen dasselbe Artefakt</p>
+    <p class="eyebrow">Ausführen</p>
+    <div class="box host"><strong>CMR-Host, betrieben von Microsoft</strong><span>Entra-Login · Conditional Access · DLP · Sharing-Limits · Default-Governance der Environment Group</span></div>
+    <div class="split">
+      <div class="box"><strong>Nutzer</strong><span>öffnen Apps im Portal <code>managedapps.cloud.microsoft</code></span></div>
+      <div class="box"><strong>Admins</strong><span>sehen und steuern alle Apps im M365 Admin Center unter Apps › All apps</span></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Vier Dinge, die Entwicklern auffallen</h2>
+  <ul class="tight">
+    <li><strong>Das Git-Repo ist die Wahrheit.</strong> Builds und Deploys laufen aus echten Commits, entweder im plattformverwalteten Repo oder in deinem GitHub-Repo.<a class="cite" href="https://learn.microsoft.com/en-us/microsoft-365/copilot-managed-runtime/architecture?view=o365-worldwide">[2]</a></li>
+    <li><strong>Finger weg von <code>ms.config.json</code>.</strong> CLI und SDK verwalten die Datei. Änderungen laufen über <code>ms</code>-Befehle, sonst gerät dein lokaler Stand aus dem Takt mit der Plattform.<a class="cite" href="https://learn.microsoft.com/en-us/microsoft-365/copilot-managed-runtime/architecture?view=o365-worldwide">[2]</a></li>
+    <li><strong>Der CLI-Pfad ist ab Werk aus.</strong> Cowork und Copilot Studio sind standardmässig an. Für CLI und SDK muss ein Admin die Option erst freigeben.<a class="cite" href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/?view=o365-worldwide">[5]</a></li>
+    <li><strong>Bauen und Ausführen werden getrennt abgerechnet.</strong> Bauen zahlt das jeweilige Werkzeug. Ausführen braucht pro Person Power Apps Premium oder eine Spending Policy mit CMR, abgerechnet mit 0.1 Copilot Credits pro API-Call. Die Power-Apps-Rechte aus E3/E5 reichen nicht.<a class="cite" href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/licensing-faq?view=o365-worldwide">[6]</a></li>
+  </ul>
+</section>
+
+<section>
+  <h2>Prüfe dich</h2>
+  <p class="note">Antworte aus dem Kopf, ohne hochzuscrollen. Falsche Antworten sind hier nützlich: Sie zeigen, was noch nicht sitzt.</p>
+  <div class="quiz">
+
+    <div class="quiz-q" data-correct="2">
+      <p>1. Wo läuft eine App, die ein Maker in Copilot Studio gebaut hat?</p>
+      <div class="opts">
+        <button class="opt">Im eigenen Azure-Abonnement</button>
+        <button class="opt">Im klassischen Power-Apps-Player</button>
+        <button class="opt">Im Microsoft-betriebenen CMR-Host</button>
+        <button class="opt">Im separaten Studio-Container</button>
+      </div>
+      <p class="explain" hidden>Alle Baupfade erzeugen dieselbe Art von App, die im CMR-Host läuft und die Default-Governance des Tenants erbt.</p>
+    </div>
+
+    <div class="quiz-q" data-correct="1">
+      <p>2. Eine Person hat Microsoft 365 E5 und sonst keine Lizenz. Darf sie eine mit ihr geteilte App ausführen?</p>
+      <div class="opts">
+        <button class="opt">Ja, E5 deckt das ab</button>
+        <button class="opt">Nein, Premium oder Policy nötig</button>
+        <button class="opt">Ja, Teilen vergibt die Nutzungsrechte</button>
+        <button class="opt">Nein, nur mit Copilot-Lizenz möglich</button>
+      </div>
+      <p class="explain" hidden>Die Power-Apps-Rechte aus E3/E5 gelten nicht für CMR. Nötig ist Power Apps Premium oder eine Spending Policy, die CMR einschliesst. Eine Copilot-Lizenz allein reicht ebenfalls nicht, und Teilen gibt nur Zugriff, keine Lizenz.</p>
+    </div>
+
+    <div class="quiz-q" data-correct="3">
+      <p>3. Wer sieht alle CMR-Apps des Tenants, egal mit welchem Werkzeug sie gebaut wurden?</p>
+      <div class="opts">
+        <button class="opt">Maker in Copilot Studio</button>
+        <button class="opt">Entwickler mit der CLI</button>
+        <button class="opt">Nutzer im App-Portal</button>
+        <button class="opt">Admin im M365-Admin-Center</button>
+      </div>
+      <p class="explain" hidden>Im Microsoft 365 Admin Center unter Apps › All apps erscheint jede App mit Owner, Abhängigkeiten, Nutzung und Health. Nutzer sehen im Portal nur die Apps, auf die sie Zugriff haben.</p>
+    </div>
+
+    <div class="quiz-q" data-correct="0">
+      <p>4. Welcher Baupfad ist im Tenant standardmässig ausgeschaltet?</p>
+      <div class="opts">
+        <button class="opt">Der Pfad über CLI/SDK</button>
+        <button class="opt">Der Pfad über Cowork</button>
+        <button class="opt">Der Pfad über Studio</button>
+      </div>
+      <p class="explain" hidden>CLI und SDK sind ab Werk aus und müssen vom Admin freigegeben werden. Cowork und Copilot Studio sind an, lassen sich aber einschränken.</p>
+    </div>
+
+    <div class="quiz-q" data-correct="2">
+      <p>5. Was ist laut Architektur-Doku die «Single Source of Truth» einer App?</p>
+      <div class="opts">
+        <button class="opt">Die lokale ms.config.json-Datei</button>
+        <button class="opt">Das zentrale Admin-Center-Inventar</button>
+        <button class="opt">Das zugehörige Git-Repository</button>
+        <button class="opt">Der generierte generated/-Ordner</button>
+      </div>
+      <p class="explain" hidden>Das Git-Repo, plattformverwaltet oder dein eigenes GitHub-Repo. <code>ms.config.json</code> hält nur Metadaten wie App-ID, Environment und Connectors.</p>
+    </div>
+
+    <div class="quiz-q" data-correct="3">
+      <p>6. Ein Teammitglied baut eine App in Cowork und teilt sie mit 200 Personen. Worüber wird das Ausführen abgerechnet?</p>
+      <div class="opts">
+        <button class="opt">Über Cowork-Credits des Erstellers</button>
+        <button class="opt">Pauschal pro App monatlich</button>
+        <button class="opt">Gar nicht, Ausführen kostenlos</button>
+        <button class="opt">Pro Nutzer über Runtime-Policy</button>
+      </div>
+      <p class="explain" hidden>Ausführen wird pro Person abgerechnet: über Power Apps Premium oder eine Spending Policy mit CMR. Eine einzelne App lässt sich in einer Policy nicht auswählen, nur Nutzer und Gruppen.</p>
+    </div>
+
+    <p class="score" aria-live="polite"></p>
+  </div>
+</section>
+
+<section>
+  <h2>Abruf-Übung</h2>
+  <p>Eine Kundin fragt: «Was ist dieses Copilot Managed Runtime?» Schreib deine Antwort in drei Sätzen, ohne hochzuscrollen. Danach vergleichst du sie mit der Musterantwort.</p>
+  <label for="recall" class="note">Deine Antwort (wird nicht gespeichert)</label>
+  <textarea id="recall"></textarea>
+  <button class="btn" data-reveal="model">Musterantwort zeigen</button>
+  <div id="model" class="reveal" hidden>
+    <p>CMR ist ein von Microsoft betriebener Host für interne Apps im eigenen M365-Tenant. Egal ob die App in Cowork, Copilot Studio, Copilot Code oder per CLI entsteht, sie läuft mit Entra-Login und erbt von Anfang an die Governance des Tenants, und die IT sieht sie im Admin Center. Abgerechnet wird getrennt: Bauen über das Werkzeug, Ausführen pro Person über Power Apps Premium oder Copilot Credits.</p>
+    <p class="note" style="margin-top:0.6rem">Hast du alle vier Ebenen getroffen: Bauen, Ausführen, Governen, Abrechnen?</p>
+  </div>
+</section>
+
+<section class="source">
+  <p class="eyebrow">Primärquelle zum Lesen (5 Minuten)</p>
+  <p><a href="https://learn.microsoft.com/en-us/microsoft-365/copilot-managed-runtime/overview?view=o365-worldwide">What is Microsoft Copilot Managed Runtime</a> auf Microsoft Learn. Danach, wenn du Zeit hast: die <a href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/?view=o365-worldwide">Übersicht für Admins</a>.</p>
+</section>
+
+<footer>
+  <p><strong>Fragen?</strong> Frag mich, deinen Lehrer, im Chat. Zum Beispiel: «Wie unterscheidet sich CMR von Power Apps?» oder «Was genau macht eine Environment Group?»</p>
+  <p>Nachschlagen: <a href="../reference/0001-landkarte.html">Landkarte CMR</a>. In 2–3 Tagen: das Quiz nochmals machen, bevor du Lektion 2 startest (Spacing).</p>
+  <p class="note">Quellen: [1] Learn: Overview · [2] Learn: Architecture · [3] Official Microsoft Blog · [4] mwpro.co.uk (Drittquelle) · [5] Learn: Admin overview · [6] Learn: Licensing FAQ</p>
+</footer>
+
+</main>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>
