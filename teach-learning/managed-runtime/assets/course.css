@@ -119,3 +119,19 @@ input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .calc-out strong { font: 500 1.35rem var(--font-display); font-variant-numeric: tabular-nums; }
 .warn { background: var(--bad-soft); border-left: 3px solid var(--bad); padding: 0.6rem 0.8rem; font-size: 0.92rem; }
 .formula { font: 0.95rem/1.6 var(--font-mono); background: var(--accent-soft); border-radius: 6px; padding: 0.8rem 1rem; overflow-x: auto; }
+
+/* Ordering task */
+.order-task { display: grid; gap: 0.6rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem; }
+.order-list { margin: 0; padding-left: 1.6rem; display: grid; gap: 0.4rem; }
+.order-list li { border: 1px solid var(--rule); border-radius: 6px; padding: 0.4rem 0.5rem 0.4rem 0.7rem; display: flex; gap: 0.6rem; align-items: center; justify-content: space-between; background: var(--bg); }
+.order-list li.correct { border-color: var(--good); background: var(--good-soft); }
+.order-list li.wrong { border-color: var(--bad); background: var(--bad-soft); }
+.order-label { min-width: 0; }
+.order-ctl { display: flex; gap: 0.25rem; flex-shrink: 0; }
+.order-ctl button { font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; width: 2rem; height: 2rem; cursor: pointer; }
+.order-ctl button:hover { border-color: var(--accent); }
+pre.cmd { font: 0.88rem/1.6 var(--font-mono); background: var(--accent-soft); border-radius: 6px; padding: 0.8rem 1rem; overflow-x: auto; margin: 0; }
+.stages { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: 0.6rem; }
+.stage { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 0.8rem; display: grid; gap: 0.35rem; align-content: start; }
+.stage .eyebrow { color: var(--accent); }
+.stage p { font-size: 0.9rem; }

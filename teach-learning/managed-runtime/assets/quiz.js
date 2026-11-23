@@ -65,3 +65,41 @@
   function boot() { document.querySelectorAll(".calc-task").forEach(init); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
 })();
+
+// Ordering task: <div class="order-task" data-solution="a,b,c"><ol class="order-list"><li data-id="b">..</li>...</ol><button class="btn">Prüfen</button><p class="verdict" aria-live="polite"></p><div class="explain" hidden>..</div></div>
+(function () {
+  function init(task) {
+    var list = task.querySelector(".order-list"), solution = task.getAttribute("data-solution").split(",");
+    var check = task.querySelector(".btn"), verdict = task.querySelector(".verdict"), ex = task.querySelector(".explain");
+    list.querySelectorAll("li").forEach(function (li) {
+      var label = document.createElement("span"); label.className = "order-label";
+      while (li.firstChild) label.appendChild(li.firstChild);
+      var ctl = document.createElement("span"); ctl.className = "order-ctl";
+      [["↑", -1, "nach oben"], ["↓", 1, "nach unten"]].forEach(function (d) {
+        var b = document.createElement("button"); b.type = "button"; b.textContent = d[0];
+        b.setAttribute("aria-label", d[2]);
+        b.addEventListener("click", function () {
+          if (d[1] < 0 && li.previousElementSibling) list.insertBefore(li, li.previousElementSibling);
+          if (d[1] > 0 && li.nextElementSibling) list.insertBefore(li.nextElementSibling, li);
+          b.focus();
+          list.querySelectorAll("li").forEach(function (x) { x.classList.remove("correct", "wrong"); });
+        });
+        ctl.appendChild(b);
+      });
+      li.appendChild(label); li.appendChild(ctl);
+    });
+    check.type = "button";
+    check.addEventListener("click", function () {
+      var items = list.querySelectorAll("li"), ok = 0;
+      items.forEach(function (li, i) {
+        var right = li.getAttribute("data-id") === solution[i];
+        li.classList.toggle("correct", right); li.classList.toggle("wrong", !right); if (right) ok++;
+      });
+      verdict.textContent = ok === items.length ? "Alles in der richtigen Reihenfolge." : ok + " von " + items.length + " an der richtigen Stelle.";
+      verdict.className = "verdict " + (ok === items.length ? "ok" : "no");
+      if (ok === items.length && ex) ex.hidden = false;
+    });
+  }
+  function boot() { document.querySelectorAll(".order-task").forEach(init); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
+})();

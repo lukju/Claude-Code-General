@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Erste App mit der CLI</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;600&family=Newsreader:opsz,wght@6..72,500&display=swap">
+<link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+<main>
+
+<header style="display:grid;gap:0.8rem">
+  <p class="eyebrow">Copilot Managed Runtime · Lektion 4 · ca. 15 Minuten (plus 20 Minuten Praxis mit Tenant)</p>
+  <h1>Erste App mit der CLI</h1>
+  <p class="lede">Git und npm kennst du. Neu ist, wie CMR aus deinen Commits eine laufende App macht: in drei Stufen, und jede Stufe hat ihren eigenen Befehl.</p>
+</header>
+
+<section class="goal">
+  <p><strong>Dein Gewinn heute:</strong> Du kennst die drei Stufen Local, Preview und Live, weisst, welcher Befehl wohin führt und was einen Build auslöst, und kannst eine Live-Version zurückrollen.</p>
+</section>
+
+<section>
+  <h2>Aufwärmen aus Lektion 3</h2>
+  <p>Ein Entwickler will <code>ms app create</code> ausführen, und der Befehl scheitert. Was muss ein Admin wo einschalten? Kurz überlegen, dann aufdecken.</p>
+  <button class="btn" data-reveal="warm4">Antwort zeigen</button>
+  <div id="warm4" class="reveal" hidden>
+    <p>Die Einstellung <strong>«Allow app creation with the Copilot Managed Runtime command line interface (CLI)»</strong> im Power Platform Admin Center unter Copilot › Settings › Managed apps, für die Environment Group oder das Environment. Standardmässig ist sie aus.<a class="cite" href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/governance?view=o365-worldwide">[1]</a></p>
+  </div>
+</section>
+
+<section>
+  <h2>Die drei Stufen</h2>
+  <div class="stages">
+    <div class="stage">
+      <p class="eyebrow">1 · Local</p>
+      <p><code>ms app dev</code> startet einen Webserver auf deinem Rechner. Die URL läuft trotzdem über den gehosteten Player (<code>play.managedapps.cloud.microsoft</code>), dadurch funktionieren Entra-Login und Connectors schon lokal. Kein Build, kein Deploy.</p>
+    </div>
+    <div class="stage">
+      <p class="eyebrow">2 · Preview</p>
+      <p>Jeder gepushte Commit ist abspielbar. <code>ms app play --mode preview</code> baut den neuesten Commit bei Bedarf. Die URLs enthalten Commit oder Branch: <code>…/commit/&lt;SHA&gt;</code> bzw. <code>…/branch/&lt;name&gt;</code>.</p>
+    </div>
+    <div class="stage">
+      <p class="eyebrow">3 · Live</p>
+      <p><code>ms app deploy</code> macht einen Build zur Live-Version. Die Live-URL bleibt über alle Deploys gleich. Weitere Pushes ändern sie erst beim nächsten Deploy. Zu Beginn sehen sie nur die Owner.</p>
+    </div>
+  </div>
+  <p class="note">Quelle: <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot-managed-runtime/developer/apps/dev-inner-loop?view=o365-worldwide">Build, preview, and deploy apps</a>.</p>
+</section>
+
+<section>
+  <h2>Fünf Regeln, die anders sind als gewohnt</h2>
+  <ul class="tight">
+    <li><strong>Ein Push baut nicht.</strong> Gebaut wird erst bei Preview, Deploy oder <code>ms app build</code>.<a class="cite" href="https://learn.microsoft.com/en-us/microsoft-365/copilot-managed-runtime/developer/apps/quickstart-managed-apps-cli?view=o365-worldwide">[2]</a></li>
+    <li><strong>Ein fehlgeschlagener Build ändert nichts.</strong> Die Preview zeigt weiter den letzten erfolgreichen Build, mit dem Hinweis «Latest build failed». Das Log liefert <code>ms app build-status --show-log</code>.<a class="cite" href="https://learn.microsoft.com/en-us/microsoft-365/copilot-managed-runtime/developer/apps/ms-cli-command-reference?view=o365-worldwide">[3]</a></li>
+    <li><strong>Zurückrollen heisst einen alten Commit deployen:</strong> <code>ms app deploy --commit &lt;SHA&gt;</code>. In der Versionskontrolle geht nichts verloren.<a class="cite" href="https://learn.microsoft.com/en-us/microsoft-365/copilot-managed-runtime/developer/apps/dev-inner-loop?view=o365-worldwide">[4]</a></li>
+    <li><strong>Nur was gepusht ist, wird deployt.</strong> Mit uncommitteten oder ungepushten Änderungen fragt <code>ms app deploy</code> nach (im JSON-Modus bricht der Befehl ab). Auch <code>--force</code> lädt keine lokalen Änderungen hoch.<a class="cite" href="https://learn.microsoft.com/en-us/microsoft-365/copilot-managed-runtime/developer/apps/ms-cli-command-reference?view=o365-worldwide">[3]</a></li>
+    <li><strong>Den Repo-Modus wählst du nur einmal:</strong> plattformverwaltet (Standard), eigenes GitHub-Enterprise-Cloud-Repo (<code>--repo &lt;url&gt;</code>, muss leer sein) oder eigener Build (<code>--repo none</code>, ohne Preview). Ein Wechsel geht nur über eine neue App.<a class="cite" href="https://learn.microsoft.com/en-us/microsoft-365/copilot-managed-runtime/developer/apps/dev-inner-loop?view=o365-worldwide">[4]</a></li>
+  </ul>
+</section>
+
+<section>
+  <h2>Reihenfolge üben</h2>
+  <p>Bring die Schritte vom leeren Rechner bis zur geteilten App in die richtige Reihenfolge. Mit den Pfeilen verschiebst du einen Schritt.</p>
+  <div class="order-task" data-solution="login,create,dev,data,push,preview,deploy,share">
+    <ol class="order-list">
+      <li data-id="push"><code>git add . &amp;&amp; git commit &amp;&amp; git push</code></li>
+      <li data-id="deploy"><code>ms app deploy</code></li>
+      <li data-id="login"><code>ms auth login</code></li>
+      <li data-id="data"><code>ms app add data-source --connector …</code></li>
+      <li data-id="share"><code>ms app share &lt;personen&gt;</code></li>
+      <li data-id="create"><code>ms app create hello-world --display-name "Hello World"</code></li>
+      <li data-id="preview"><code>ms app play --mode preview</code></li>
+      <li data-id="dev"><code>npm install &amp;&amp; ms app dev</code></li>
+    </ol>
+    <button class="btn">Prüfen</button>
+    <p class="verdict" aria-live="polite"></p>
+    <div class="explain" hidden><p>Anmelden, App anlegen (Plattform-App, Repo und Projektdateien), lokal entwickeln, Connector hinzufügen (erzeugt typisierte Models und Services in <code>generated/</code>), pushen, Preview bauen und prüfen, live schalten, teilen. Der Connector kann auch erst später kommen. Wichtig ist, dass Push vor Preview und Preview vor Deploy steht.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Prüfe dich</h2>
+  <div class="quiz">
+    <div class="quiz-q" data-correct="0">
+      <p>1. Du hast eben auf <code>main</code> gepusht. Was passiert automatisch?</p>
+      <div class="opts">
+        <button class="opt">Nichts, ein Push baut nicht</button>
+        <button class="opt">Build und Deploy starten sofort</button>
+        <button class="opt">Die Live-URL wird sofort aktualisiert</button>
+        <button class="opt">Ein Preview-Build startet sofort automatisch</button>
+      </div>
+      <p class="explain" hidden>Ein Push allein löst keinen Build aus. Gebaut wird erst bei <code>ms app play --mode preview</code>, <code>ms app build</code> oder <code>ms app deploy</code>.</p>
+    </div>
+    <div class="quiz-q" data-correct="1">
+      <p>2. Der neueste Build ist fehlgeschlagen. Was zeigt die Preview?</p>
+      <div class="opts">
+        <button class="opt">Nur eine leere Fehlerseite</button>
+        <button class="opt">Den letzten erfolgreichen Build</button>
+        <button class="opt">Den Stand vom Laptop</button>
+        <button class="opt">Immer die aktuelle Live-Version</button>
+      </div>
+      <p class="explain" hidden>Die Preview zeigt den letzten erfolgreichen Build mit dem Hinweis «Latest build failed. Showing the last successful build.» Eine «never deployed»-Seite erscheint nur, wenn es noch nie einen erfolgreichen Build gab.</p>
+    </div>
+    <div class="quiz-q" data-correct="2">
+      <p>3. Die Live-Version ist kaputt. Wie rollst du zurück?</p>
+      <div class="opts">
+        <button class="opt"><code>ms app build --commit &lt;SHA&gt;</code></button>
+        <button class="opt"><code>git push --force origin main</code></button>
+        <button class="opt"><code>ms app deploy --commit &lt;SHA&gt;</code></button>
+        <button class="opt"><code>git revert HEAD &amp;&amp; git push</code></button>
+      </div>
+      <p class="explain" hidden>Mit <code>git log</code> den letzten guten Commit suchen und ihn deployen. <code>ms app build</code> baut nur, und ein <code>git revert</code> mit Push ändert die Live-Version ebenfalls nicht, solange niemand deployt.</p>
+    </div>
+    <div class="quiz-q" data-correct="1">
+      <p>4. Du hast schon ein Vite-Projekt und willst es an CMR anbinden, ohne neu anzufangen.</p>
+      <div class="opts">
+        <button class="opt"><code>ms app create</code> im Projektordner</button>
+        <button class="opt"><code>ms app init</code> im Projektordner</button>
+        <button class="opt"><code>ms app clone</code> im Projektordner</button>
+        <button class="opt"><code>ms app pack</code> im Projektordner</button>
+      </div>
+      <p class="explain" hidden><code>ms app init</code> registriert ein bestehendes Webprojekt. <code>ms app create</code> braucht einen leeren Ordner, <code>clone</code> holt ein bestehendes Plattform-Repo und <code>pack</code> baut nur lokal.</p>
+    </div>
+    <div class="quiz-q" data-correct="0">
+      <p>5. <code>ms app dev</code> läuft, aber Chrome blockiert den Zugriff der gehosteten Seite auf <code>localhost</code>.</p>
+      <div class="opts">
+        <button class="opt">Lokale-Netzwerk-Berechtigung im Browser erteilen</button>
+        <button class="opt">connect-src um localhost erweitern lassen</button>
+        <button class="opt">CLI-Erstellung im PPAC freischalten lassen</button>
+        <button class="opt">Neues Personal Environment anlegen lassen</button>
+      </div>
+      <p class="explain" hidden>Seit Dezember 2025 blockieren Chrome und Edge standardmässig den Zugriff öffentlicher Seiten auf localhost. Nötig ist eine Browser-Berechtigung oder eine Enterprise-Policy. Mit der CSP der App hat das nichts zu tun.</p>
+    </div>
+    <div class="quiz-q" data-correct="3">
+      <p>6. Wo landet das Ergebnis von <code>ms app add data-source</code>?</p>
+      <div class="opts">
+        <button class="opt">Nur in deiner package.json</button>
+        <button class="opt">In einer lokalen .env-Datei</button>
+        <button class="opt">Nur im Admin Center</button>
+        <button class="opt">In ms.config.json und generated/</button>
+      </div>
+      <p class="explain" hidden>Die CLI registriert den Connector in <code>ms.config.json</code> und erzeugt typisierte Models und Services in <code>generated/</code>. Dein Code importiert aus <code>generated/</code>. Nach Schemaänderungen: <code>ms app refresh data-source</code>.</p>
+    </div>
+    <p class="score" aria-live="polite"></p>
+  </div>
+</section>
+
+<section>
+  <h2>Praxis, wenn du einen Tenant hast</h2>
+  <p><strong>Voraussetzungen:</strong></p>
+  <ul class="tight">
+    <li>Node.js ab v24.11.0, Git ab v2.27.0 mit Git Credential Manager.<a class="cite" href="https://learn.microsoft.com/en-us/microsoft-365/copilot-managed-runtime/developer/apps/?view=o365-worldwide">[5]</a></li>
+    <li>Die CLI-Erstellung ist für dein Environment freigegeben (Lektion 3).</li>
+    <li>Für das lokale Ausführen brauchst du Power Apps Premium oder eine Spending Policy mit CMR (<a href="0002-laufzeitkosten-hochrechnen.html">Lektion 2</a>). Ohne Credits wird man laut SDK-Übersicht nach 20 App-Operationen oder fünf Minuten blockiert.<a class="cite" href="https://learn.microsoft.com/en-us/microsoft-365/copilot-managed-runtime/developer/apps/?view=o365-worldwide">[5]</a></li>
+    <li>Öffne die URLs im Browserprofil deines Tenants.</li>
+  </ul>
+  <pre class="cmd">npm install -g @microsoft/cmr-cli
+ms --version
+ms auth login
+ms app create hello-world --display-name "Hello World"
+cd hello-world
+npm install
+ms app dev                      # Local-Play-URL öffnen
+ms connector list --only-allowed
+git add . &amp;&amp; git commit -m "first pass" &amp;&amp; git push
+ms app play --mode preview
+ms app deploy                   # gibt die Live-URL aus</pre>
+  <p><strong>Beobachtungsauftrag:</strong> Schau nach <code>ms app create</code> in <code>ms.config.json</code> und notiere, welches Environment dort steht. Das knüpft an die offene Frage aus Lektion 3 an. Schick mir die Ausgabe von <code>ms connector list --only-allowed</code> und von <code>ms app create --help</code>, dann prüfen wir sie zusammen.</p>
+  <p class="note">Die SDK-Übersicht zeigt keinen Beispielcode zur Laufzeit-API. Wie die Services in <code>generated/</code> aussehen, schauen wir an, sobald du sie erzeugt hast.</p>
+</section>
+
+<section>
+  <h2>Abruf-Übung</h2>
+  <p>Nenn die drei Stufen, den Befehl, der jeweils dorthin führt, und sag, was eine Preview-URL von der Live-URL unterscheidet.</p>
+  <label for="recall4" class="note">Deine Antwort (wird nicht gespeichert)</label>
+  <textarea id="recall4"></textarea>
+  <button class="btn" data-reveal="model4">Lösung zeigen</button>
+  <div id="model4" class="reveal" hidden>
+    <p>Local: <code>ms app dev</code>. Preview: pushen, dann <code>ms app play --mode preview</code>. Live: <code>ms app deploy</code>. Preview-URLs enthalten Commit oder Branch. Die Live-URL hat keinen Bezeichner und bleibt über alle Deploys gleich.</p>
+  </div>
+</section>
+
+<section class="source">
+  <p class="eyebrow">Primärquelle (10 Minuten)</p>
+  <p><a href="https://learn.microsoft.com/en-us/microsoft-365/copilot-managed-runtime/developer/apps/dev-inner-loop?view=o365-worldwide">Build, preview, and deploy Copilot Managed Runtime apps</a>. Zum Nachschlagen die <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot-managed-runtime/developer/apps/ms-cli-command-reference?view=o365-worldwide">CLI command reference</a>.</p>
+</section>
+
+<footer>
+  <p><strong>Fragen?</strong> Frag mich im Chat, zum Beispiel: «Wie richte ich das mit unserem GitHub-Enterprise-Repo und Branch Policies ein?» oder «Wie sieht ein Deploy aus GitHub Actions aus?»</p>
+  <p>Zurück: <a href="0003-governance-ab-der-ersten-app.html">Lektion 3</a> · Nachschlagen: <a href="../reference/0003-cli-spickzettel.html">CLI-Spickzettel</a>, <a href="../reference/0001-landkarte.html">Landkarte CMR</a></p>
+  <p class="note">Quellen: [1] Learn: Governance · [2] Learn: Quickstart CLI · [3] Learn: CLI command reference · [4] Learn: Build, preview, and deploy · [5] Learn: SDK overview. Stand 17.–23.11.2026, Seiten als Preview markiert.</p>
+</footer>
+
+</main>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

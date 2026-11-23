@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CLI-Spickzettel CMR</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;600&family=Newsreader:opsz,wght@6..72,500&display=swap">
+<link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+<main>
+<header style="display:grid;gap:0.6rem">
+  <p class="eyebrow">Referenz · Stand 23.11.2026 · CLI im Preview-Status</p>
+  <h1>CLI-Spickzettel</h1>
+  <p class="lede"><code>@microsoft/cmr-cli</code>, aufgerufen als <code>ms</code>. Quelle: <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot-managed-runtime/developer/apps/ms-cli-command-reference?view=o365-worldwide">CLI command reference</a>. Im Zweifel <code>ms &lt;befehl&gt; --help</code>.</p>
+</header>
+
+<section>
+  <h2>Stufen</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Stufe</th><th>Befehl</th><th>URL</th></tr>
+    <tr><td>Local</td><td><code>ms app dev</code></td><td>play.managedapps.cloud.microsoft/…, von deinem Rechner ausgeliefert</td></tr>
+    <tr><td>Preview</td><td><code>ms app play --mode preview</code></td><td>…/apps/&lt;appId&gt;/commit/&lt;SHA&gt; oder …/branch/&lt;name&gt;</td></tr>
+    <tr><td>Live</td><td><code>ms app deploy</code></td><td>feste URL ohne Commit, bleibt über Deploys gleich</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>Befehle</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Befehl</th><th>Zweck</th><th>Wichtige Flags</th></tr>
+    <tr><td><code>ms auth login | status | switch | logout</code></td><td>Entra-Anmeldung</td><td><code>--account</code></td></tr>
+    <tr><td><code>ms app create [dir]</code></td><td>App, Repo, Projekt anlegen (Ordner leer)</td><td><code>--display-name</code>, <code>--repo &lt;url&gt;|none</code>, <code>--environment-id</code>, <code>--template</code>, <code>--build-command</code>, <code>--build-path</code></td></tr>
+    <tr><td><code>ms app init</code></td><td>Bestehendes Projekt registrieren</td><td><code>--display-name</code>, <code>--repo native|none|&lt;url&gt;</code>, <code>--environment-id</code></td></tr>
+    <tr><td><code>ms app clone</code></td><td>Plattform-Repo klonen</td><td><code>--app &lt;id&gt;</code></td></tr>
+    <tr><td><code>ms connector list | list-actions</code></td><td>Connectors und Aktionen (mit DLP-Status)</td><td><code>--search</code>, <code>--only-allowed</code>, <code>--connector</code></td></tr>
+    <tr><td><code>ms app add data-source</code></td><td>Connector registrieren, Code in <code>generated/</code></td><td><code>--connector</code>, <code>--as table|action</code>, <code>--connection-id</code>, <code>--dataset</code>, <code>--table</code>, <code>--use-sso</code></td></tr>
+    <tr><td><code>ms app refresh | remove data-source</code></td><td>Schema neu laden / entfernen</td><td><code>--name</code></td></tr>
+    <tr><td><code>ms app add backend</code></td><td>Fabric-Datenbank (Admin-Freigabe nötig)</td><td><code>--provider fabric</code></td></tr>
+    <tr><td><code>ms app build | build-status</code></td><td>Plattform-Build / Status</td><td><code>--commit</code>, <code>--no-wait</code>, <code>--show-log</code></td></tr>
+    <tr><td><code>ms app pack</code></td><td>Lokal bauen, ohne Upload</td><td>–</td></tr>
+    <tr><td><code>ms app deploy</code></td><td>Build live schalten, Rollback</td><td><code>--commit</code>, <code>--artifact &lt;zip&gt;</code> (nur ohne Source Control), <code>--force</code></td></tr>
+    <tr><td><code>ms app share | unshare</code></td><td>Zugriff geben / entziehen</td><td><code>--access play|edit</code></td></tr>
+    <tr><td><code>ms app share link create | list | revoke</code></td><td>Tenantweite Links</td><td><code>--link-id</code></td></tr>
+    <tr><td><code>ms app list | info</code></td><td>Apps auflisten / Serverzustand</td><td><code>--environment-id</code>, <code>--permission</code></td></tr>
+    <tr><td><code>ms app get-settings | set-setting</code></td><td>App-Einstellungen</td><td><code>--show-header</code></td></tr>
+    <tr><td><code>ms app delete</code></td><td>App löschen (Code und Repo bleiben)</td><td><code>--force</code></td></tr>
+    <tr><td><code>ms admin add | remove owner</code></td><td>Owner verwalten (Power Platform Admin oder Global Admin)</td><td><code>--app</code></td></tr>
+  </table></div>
+  <p class="note">Globale Flags: <code>--json</code>, <code>--non-interactive</code>, <code>--no-color</code>, <code>--cloud</code>. Ein Push baut nicht. <code>build-status</code> prüft standardmässig den lokalen HEAD. Eigene Service Worker werden nicht unterstützt.</p>
+  <p class="note">Zur Lektion: <a href="../lessons/0004-erste-app-mit-der-cli.html">Erste App mit der CLI</a></p>
+</section>
+</main>
+</body>
+</html>
