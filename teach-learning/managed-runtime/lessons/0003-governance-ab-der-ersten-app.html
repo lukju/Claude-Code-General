@@ -64,6 +64,13 @@
   <p class="note">Offen: Die Architektur-Seite nennt Conditional Access und DLP als Laufzeitschutz des Hosts, die Sicherheitsseiten beschreiben beides aber nicht. Auch die Admin-Pfade unterscheiden sich zwischen den Seiten (Apps › Settings › Environment groups gegenüber Settings › App settings). Im Portal prüfen.</p>
 </section>
 
+<section class="reveal" style="display:grid;gap:0.6rem">
+  <p class="eyebrow">Offene Frage · nicht abschliessend geklärt</p>
+  <h3>Werden Apps für mehr Rechte «hochgestuft»?</h3>
+  <p><strong>Mögliches Konzept (Annahme):</strong> Die Default Group bleibt restriktiv, auch für die Personal Environments. Braucht eine App mehr, zieht sie in ein gemeinsames Environment mit lockererer Environment Group. Das Personal Environment des Makers wird nicht gelockert, die Ausnahme hängt an der App und ihrem Ziel-Environment.</p>
+  <p><strong>Belegt:</strong> Makers können per <code>ms app create --environment-id</code> ein anderes Environment wählen, Microsoft erwähnt «shared environments».<a class="cite" href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/personal-environments-lifecycle-copilot-managed-runtime?view=o365-worldwide">[4]</a> <strong>Nicht belegt:</strong> dass Microsoft das als Governance-Muster empfiehlt. Technisch ist es kein Verschieben, sondern eine neue App mit neuer ID und URL. Einen Move-Befehl gibt es nicht.</p>
+</section>
+
 <section>
   <h2>Fälle zuordnen</h2>
   <p class="note">Für jeden Fall: Was muss ein Admin tun? Kommt mehr als ein Hebel in Frage, ist der gesucht, der das Problem direkt löst.</p>
@@ -177,7 +184,7 @@
 <footer>
   <p><strong>Fragen?</strong> Frag mich im Chat, zum Beispiel: «Wie verhält sich das bei einem Kunden, der schon Environment Routing nutzt?» oder «Was ist der Unterschied zwischen ACP und DLP-Policies?»</p>
   <p>Zurück: <a href="0002-laufzeitkosten-hochrechnen.html">Lektion 2</a> · Nachschlagen: <a href="../reference/0002-governance-defaults.html">Governance-Defaults</a>, <a href="../reference/0001-landkarte.html">Landkarte CMR</a></p>
-  <p class="note">Quellen: [1] Learn: Review default governance settings · [2] Learn: Security and governance in the managed runtime · [3] Learn: Manage security and compliance (Preview). Alle Stand 17.11.2026.</p>
+  <p class="note">Quellen: [1] Learn: Review default governance settings · [2] Learn: Security and governance in the managed runtime · [3] Learn: Manage security and compliance (Preview) · [4] Learn: Lifecycle of personal environments. Stand 17.–23.11.2026.</p>
 </footer>
 
 </main>

@@ -22,6 +22,10 @@ Stand: 23.11.2026. Die Plattform ändert sich schnell; Microsoft Learn ist die m
   Was der Host erzwingt (Sandbox-iframe, CSP, Connector-Pfad über Host) vs. was Admins steuern. Use for: Sicherheitsargumentation gegenüber Kunden.
 - [Manage security and compliance (Preview)](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/security-compliance?view=o365-worldwide)
   Sharing, Sicherheitsgruppe, CSP, ACP, Purview-Audit (Record Type CopilotManagedRuntime). Use for: Compliance, Audit.
+- [Manage the lifecycle of personal environments and CMR apps](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/personal-environments-lifecycle-copilot-managed-runtime?view=o365-worldwide)
+  Owner-Wechsel, Löschen von Environments, `--environment-id` für ein anderes Ziel-Environment. Use for: App-Lebenszyklus, offene Frage «Hochstufen» (LR 0003).
+- [CLI command reference](https://learn.microsoft.com/en-us/microsoft-365/copilot-managed-runtime/developer/apps/ms-cli-command-reference?view=o365-worldwide)
+  Alle `ms`-Befehle und Flags. Use for: Dev-Lektionen, prüfen, was die CLI kann (z. B. kein Move).
 - [Build apps with the Copilot Managed Runtime SDK](https://learn.microsoft.com/en-us/microsoft-365/managed-apps/developer/?view=o365-worldwide)
   SDK-Übersicht für Entwickler. Use for: Dev-Lektionen.
 - [Quickstart: Create an app with the SDK (CLI)](https://learn.microsoft.com/en-us/microsoft-365/copilot-managed-runtime/developer/apps/quickstart-managed-apps-cli?view=o365-worldwide)
@@ -46,6 +50,9 @@ Stand: 23.11.2026. Die Plattform ändert sich schnell; Microsoft Learn ist die m
   Wiedergabe der Message-Center-Meldung zur GA. Use for: Status-Hinweis, im eigenen Message Center bestätigen.
 
 ## Wisdom (Communities)
+
+- [Power Platform Community: «Copilot Studio App Migration»](https://community.powerplatform.com/forums/thread/details/?threadid=b1a58b91-ebdd-f111-84ea-7c1e52fed964)
+  Einziger gefundener Thread zu DEV/UAT/PROD für CMR-Apps, keine akzeptierte Antwort. Use for: offene Frage «Hochstufen».
 
 - [Microsoft Tech Community](https://techcommunity.microsoft.com/)
   Offizielles Forum mit Microsoft-Mitarbeitenden. Use for: Fragen zu Admin, Governance, Lizenzierung. (Noch kein CMR-spezifischer Bereich verifiziert.)
