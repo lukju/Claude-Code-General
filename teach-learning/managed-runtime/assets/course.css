@@ -97,3 +97,25 @@ footer { border-top: 1px solid var(--rule); padding-top: 1.2rem; font-size: 0.9r
 
 @media (prefers-reduced-motion: no-preference) { .opt { transition: background 0.15s, border-color 0.15s; } }
 @media print { body { background: #fff; color: #000; } .btn, textarea { display: none; } .reveal[hidden] { display: block !important; } }
+
+/* Form fields, numeric tasks, calculator */
+input[type="number"], .calc-task input {
+  font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--rule);
+  border-radius: 6px; padding: 0.45rem 0.6rem; width: 100%; font-variant-numeric: tabular-nums;
+}
+input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.calc-task { display: grid; gap: 0.5rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem; }
+.calc-task .answer-row { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+.calc-task .answer-row input { max-width: 10rem; }
+.verdict { font-weight: 600; min-height: 1.2em; }
+.verdict.ok { color: var(--good); }
+.verdict.no { color: var(--bad); }
+.calc { display: grid; gap: 1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1.2rem; }
+.calc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 0.8rem; }
+.calc-grid label { display: grid; gap: 0.25rem; font-size: 0.85rem; color: var(--muted); }
+.calc-out { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: 0.8rem; border-top: 1px solid var(--rule); padding-top: 1rem; }
+.calc-out div { display: grid; gap: 0.15rem; }
+.calc-out span { font-size: 0.78rem; color: var(--muted); }
+.calc-out strong { font: 500 1.35rem var(--font-display); font-variant-numeric: tabular-nums; }
+.warn { background: var(--bad-soft); border-left: 3px solid var(--bad); padding: 0.6rem 0.8rem; font-size: 0.92rem; }
+.formula { font: 0.95rem/1.6 var(--font-mono); background: var(--accent-soft); border-radius: 6px; padding: 0.8rem 1rem; overflow-x: auto; }

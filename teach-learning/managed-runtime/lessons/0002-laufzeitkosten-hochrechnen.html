@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Laufzeitkosten hochrechnen</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;600&family=Newsreader:opsz,wght@6..72,500&display=swap">
+<link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+<main>
+
+<header style="display:grid;gap:0.8rem">
+  <p class="eyebrow">Copilot Managed Runtime · Lektion 2 · ca. 15 Minuten</p>
+  <h1>Laufzeitkosten hochrechnen</h1>
+  <p class="lede">Ein Kunde will eine App mit 200 Personen teilen und fragt, was das im Monat kostet. Nach dieser Lektion rechnest du das in zwei Minuten aus.</p>
+</header>
+
+<section class="goal">
+  <p><strong>Dein Gewinn heute:</strong> Du rechnest die monatlichen Laufzeitkosten eines Szenarios aus, erkennst, wann Nutzer an ihr Limit stossen, und kennst die Stellschrauben, die den Preis treiben.</p>
+</section>
+
+<section>
+  <h2>Aufwärmen aus Lektion 1</h2>
+  <p>Welche zwei Wege berechtigen eine Person, eine CMR-App auszuführen? Überleg kurz, dann aufdecken.</p>
+  <button class="btn" data-reveal="warmup">Antwort zeigen</button>
+  <div id="warmup" class="reveal" hidden>
+    <p>Eine <strong>Power Apps Premium</strong>-Lizenz oder die Aufnahme in eine <strong>Spending Policy, die Copilot Managed Runtime einschliesst</strong>. E3/E5 und die Copilot-Lizenz reichen nicht.<a class="cite" href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/licensing-faq?view=o365-worldwide">[1]</a></p>
+  </div>
+</section>
+
+<section>
+  <h2>Was ein API-Call ist</h2>
+  <p>CMR misst die Laufzeit in Copilot Credits: <strong>0.1 Credit pro API-Call</strong>. US$1 kauft 100 Credits, also rund 1000 Calls.<a class="cite" href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/licensing-faq?view=o365-worldwide">[1]</a> Als Call zählt:</p>
+  <ul class="tight">
+    <li><strong>Jedes statische Asset beim Start</strong>: jedes Script, Stylesheet und Bild. Ein einziger Start kann also mehrere Calls auslösen.</li>
+    <li><strong>Jeder Datenzugriff über einen Connector</strong>, etwa einen Datensatz lesen oder schreiben.</li>
+    <li><strong>Jeder Zugriff auf eine Datenquelle</strong>, auch Dataverse.</li>
+    <li><strong>Das Veröffentlichen</strong> einer App.</li>
+  </ul>
+  <p>Spezialisierte Dienste wie die Work IQ APIs laufen nicht über diesen Tarif. Sie kosten zusätzlich, zu eigenen Preisen.<a class="cite" href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/licensing-faq?view=o365-worldwide">[1]</a></p>
+</section>
+
+<section>
+  <h2>Die Formel</h2>
+  <p>Microsoft rechnet in seinen Beispielen mit 22 Arbeitstagen pro Monat.<a class="cite" href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/licensing-credits?view=o365-worldwide">[2]</a> Daraus ergibt sich:</p>
+  <div class="formula">Credits pro Person und Monat<br>= Starts pro Tag × (Assets + Daten-Calls pro Start) × 22 × 0.1<br><br>Kosten in US$ = Credits aller zahlenden Personen ÷ 100</div>
+  <p class="note">Die Formel steht so nicht in der Doku. Sie reproduziert aber alle sechs Microsoft-Beispiele exakt, zum Beispiel den Team-Tracker: 2 × (1 + 10) × 22 × 0.1 = 48.4 Credits pro Person.<a class="cite" href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/licensing-credits?view=o365-worldwide">[2]</a></p>
+</section>
+
+<section>
+  <h2>Wer wird überhaupt belastet?</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Situation</th><th>Was passiert</th></tr>
+    <tr><td>Power Apps Premium</td><td>Keine Credits. Die Calls zählen gegen die täglichen Power Platform Request Limits. Nur der Überhang kostet Credits.</td></tr>
+    <tr><td>In einer CMR-Policy</td><td>Credits bis zum Limit pro Person. Das Limit setzt sich am 1. des Monats zurück.</td></tr>
+    <tr><td>Limit erreicht</td><td>Kein Ausweichen auf eine andere Policy. Die Person kann in der App über <em>Request more</em> mehr Credits anfragen.</td></tr>
+    <tr><td>Keine Lizenz, keine Policy</td><td>Die App startet nicht: «You do not have enough credits to use this app».</td></tr>
+    <tr><td>In mehreren Policies</td><td>Es gilt die Policy mit dem höchsten Limit pro Person. Limits werden nicht addiert.</td></tr>
+  </table></div>
+  <p class="note">Quellen: <a href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/licensing-faq?view=o365-worldwide">Licensing FAQ</a>, <a href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/licensing-credits?view=o365-worldwide">Licensing and Copilot Credits</a>. Eine Spending Policy ist ein Limit, keine Vorauszahlung, und lässt sich nicht auf einzelne Apps beschränken.</p>
+</section>
+
+<section>
+  <h2>Rechner</h2>
+  <p>Spiel mit den Werten. Die Vorgabe ist ein Beispiel: 200 Personen, eine einfache App.</p>
+  <div class="calc" id="calc">
+    <div class="calc-grid">
+      <label for="c-users">Personen<input type="number" id="c-users" min="0" value="200"></label>
+      <label for="c-starts">Starts pro Tag<input type="number" id="c-starts" min="0" step="0.5" value="2"></label>
+      <label for="c-assets">Assets pro Start<input type="number" id="c-assets" min="0" value="4"></label>
+      <label for="c-data">Daten-Calls pro Start<input type="number" id="c-data" min="0" value="6"></label>
+      <label for="c-days">Arbeitstage pro Monat<input type="number" id="c-days" min="0" max="31" value="22"></label>
+      <label for="c-premium">Anteil mit Premium (%)<input type="number" id="c-premium" min="0" max="100" value="0"></label>
+      <label for="c-limit">Limit pro Person (Credits)<input type="number" id="c-limit" min="0" value="100"></label>
+    </div>
+    <div class="calc-out" aria-live="polite">
+      <div><span>Calls pro Person</span><strong id="o-calls">–</strong></div>
+      <div><span>Credits pro Person</span><strong id="o-cpp">–</strong></div>
+      <div><span>Credits gesamt</span><strong id="o-total">–</strong></div>
+      <div><span>Kosten pro Monat</span><strong id="o-usd">–</strong></div>
+    </div>
+    <p class="warn" id="o-warn" hidden></p>
+    <p class="note">Annahmen: Premium-Personen bleiben unter ihren Request Limits. Wer sein Limit erreicht, verbraucht danach nichts mehr. Work IQ und ähnliche Dienste sind nicht eingerechnet.</p>
+  </div>
+</section>
+
+<section>
+  <h2>Selbst rechnen</h2>
+  <p>Jetzt ohne Rechner, nur mit Kopf oder Taschenrechner. Die Rückmeldung kommt sofort.</p>
+
+  <div class="calc-task" data-answer="11" data-tol="0.05">
+    <label for="t1"><strong>A.</strong> 50 Personen ohne Premium, 1 Start pro Tag, 5 Assets, 5 Daten-Calls, 22 Tage. Kosten pro Monat in US$?</label>
+    <div class="answer-row"><input id="t1" inputmode="decimal" autocomplete="off"><button class="btn">Prüfen</button></div>
+    <p class="verdict" aria-live="polite"></p>
+    <p class="explain" hidden>1 × (5 + 5) × 22 = 220 Calls = 22 Credits pro Person. 50 × 22 = 1100 Credits = <strong>US$11</strong>.</p>
+  </div>
+
+  <div class="calc-task" data-answer="33" data-tol="0.05">
+    <label for="t2"><strong>B.</strong> Gleiche App, aber das Build splittet in 25 Dateien statt 5. Kosten pro Monat in US$?</label>
+    <div class="answer-row"><input id="t2" inputmode="decimal" autocomplete="off"><button class="btn">Prüfen</button></div>
+    <p class="verdict" aria-live="polite"></p>
+    <p class="explain" hidden>1 × (25 + 5) × 22 = 660 Calls = 66 Credits pro Person. 50 × 66 = 3300 Credits = <strong>US$33</strong>. Dreimal so teuer, nur wegen der Build-Konfiguration.</p>
+  </div>
+
+  <div class="calc-task" data-answer="8" data-tol="0">
+    <label for="t3"><strong>C.</strong> Eine Power-Userin startet 4-mal pro Tag, 15 Assets, 20 Daten-Calls pro Start. Ihr Limit liegt bei 100 Credits. An welchem Arbeitstag des Monats erreicht sie es?</label>
+    <div class="answer-row"><input id="t3" inputmode="decimal" autocomplete="off"><button class="btn">Prüfen</button></div>
+    <p class="verdict" aria-live="polite"></p>
+    <p class="explain" hidden>4 × (15 + 20) = 140 Calls = 14 Credits pro Tag. Nach 7 Tagen sind es 98 Credits, am <strong>8. Arbeitstag</strong> ist das Limit erreicht. Für solche Gruppen empfiehlt Microsoft eine eigene Policy mit höherem Limit.</p>
+  </div>
+</section>
+
+<section>
+  <h2>Stellschrauben</h2>
+  <ul class="tight">
+    <li><strong>Limit pro Person:</strong> Microsoft empfiehlt eine breite Policy für alle mit etwa 100 Credits (US$1) pro Monat und eigene Policies mit höherem Limit für Vielnutzer.<a class="cite" href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/licensing-faq?view=o365-worldwide">[1]</a></li>
+    <li><strong>Pay-as-you-go aktivieren:</strong> Sonst werden Personen blockiert, sobald vorausbezahlte Credits aufgebraucht sind.<a class="cite" href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/licensing-faq?view=o365-worldwide">[1]</a></li>
+    <li><strong>Weniger Assets pro Start</strong> und <strong>weniger Daten-Calls</strong> pro Ansicht: Das folgt direkt aus der Zählweise. Konkrete Optimierungstipps nennt Microsoft nicht; das ist meine Ableitung.</li>
+  </ul>
+  <p class="note">Offen, weil die Doku schweigt: Werden Assets aus dem Browser-Cache gezählt? Zählen Code-Chunks, die erst nach dem Start nachgeladen werden? Den Verbrauch pro App kann man nicht direkt sehen, nur pro Policy, Service und Person (Admin Center › Copilot › Cost management).</p>
+</section>
+
+<section>
+  <h2>Prüfe dich</h2>
+  <div class="quiz">
+    <div class="quiz-q" data-correct="2">
+      <p>1. Eine Person ohne Lizenz und ohne Policy öffnet eine geteilte App. Was passiert?</p>
+      <div class="opts">
+        <button class="opt">Credits werden automatisch abgebucht</button>
+        <button class="opt">Ersteller zahlt ihre Calls</button>
+        <button class="opt">App startet mit Fehlermeldung</button>
+        <button class="opt">Sie erhält Gratis-Kontingent monatlich</button>
+      </div>
+      <p class="explain" hidden>Ohne Abdeckung erscheint «You do not have enough credits to use this app». Teilen gibt Zugriff, aber keine Laufzeitberechtigung.</p>
+    </div>
+    <div class="quiz-q" data-correct="0">
+      <p>2. Eine Person ist in zwei Policies, mit 50 und 200 Credits Limit. Was gilt?</p>
+      <div class="opts">
+        <button class="opt">Die Policy mit 200 Credits</button>
+        <button class="opt">Die Policy mit 50 Credits</button>
+        <button class="opt">Beide Limits addiert, also 250</button>
+        <button class="opt">Immer die zuletzt erstellte Policy</button>
+      </div>
+      <p class="explain" hidden>Das höchste Limit pro Person gewinnt. Bei Gleichstand entscheidet das grössere Gesamtlimit, dann die neuere Policy. Limits werden nie addiert.</p>
+    </div>
+    <div class="quiz-q" data-correct="3">
+      <p>3. Was wird <em>nicht</em> mit 0.1 Credit pro Call abgerechnet?</p>
+      <div class="opts">
+        <button class="opt">Ein Stylesheet laden</button>
+        <button class="opt">Einen Datensatz lesen</button>
+        <button class="opt">Eine Version veröffentlichen</button>
+        <button class="opt">Eine Work-IQ-API aufrufen</button>
+      </div>
+      <p class="explain" hidden>Work IQ APIs und ähnliche spezialisierte Dienste haben eigene Tarife, auch für Premium-Nutzer.</p>
+    </div>
+    <div class="quiz-q" data-correct="1">
+      <p>4. Kann man einer einzelnen App ein eigenes Budget geben?</p>
+      <div class="opts">
+        <button class="opt">Ja, per Policy pro App</button>
+        <button class="opt">Nein, nur Nutzer oder Gruppen</button>
+        <button class="opt">Ja, per Eintrag in ms.config.json</button>
+        <button class="opt">Nein, nur pro Environment möglich</button>
+      </div>
+      <p class="explain" hidden>Spending Policies lassen sich nicht auf Apps einschränken. Man deckt die Personen ab, die die App nutzen.</p>
+    </div>
+    <p class="score" aria-live="polite"></p>
+  </div>
+</section>
+
+<section class="source">
+  <p class="eyebrow">Primärquelle zum Lesen (10 Minuten)</p>
+  <p><a href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/licensing-credits?view=o365-worldwide">Manage licensing and Copilot Credits for apps on Copilot Managed Runtime</a>, besonders der Abschnitt «Estimate runtime costs». Ergänzend die <a href="https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/licensing-faq?view=o365-worldwide">Licensing FAQ</a>.</p>
+</section>
+
+<footer>
+  <p><strong>Fragen?</strong> Frag mich im Chat, zum Beispiel: «Rechne mir unser Szenario mit 800 Personen durch» oder «Lohnt sich Premium ab einer bestimmten Nutzung?»</p>
+  <p>Zurück: <a href="0001-eine-runtime-viele-wege.html">Lektion 1</a> · Nachschlagen: <a href="../reference/0001-landkarte.html">Landkarte CMR</a> · In 2–3 Tagen: Aufgabe C nochmals ohne Spicken rechnen.</p>
+  <p class="note">Quellen: [1] Learn: Licensing FAQ · [2] Learn: Manage licensing and Copilot Credits (beide Stand 19.11.2026)</p>
+</footer>
+
+</main>
+<script src="../assets/quiz.js"></script>
+<script>
+(function () {
+  function n(id) { var v = parseFloat(document.getElementById(id).value); return isNaN(v) || v < 0 ? 0 : v; }
+  var fmt = new Intl.NumberFormat("de-CH", { maximumFractionDigits: 1 });
+  var usd = new Intl.NumberFormat("de-CH", { style: "currency", currency: "USD", maximumFractionDigits: 2 });
+  function calc() {
+    var users = n("c-users"), starts = n("c-starts"), perStart = n("c-assets") + n("c-data"), days = n("c-days");
+    var premium = Math.min(n("c-premium"), 100) / 100, limit = n("c-limit");
+    var calls = starts * perStart * days, cpp = calls * 0.1;
+    var paying = Math.round(users * (1 - premium)), billed = Math.min(cpp, limit), total = paying * billed;
+    document.getElementById("o-calls").textContent = fmt.format(calls);
+    document.getElementById("o-cpp").textContent = fmt.format(cpp);
+    document.getElementById("o-total").textContent = fmt.format(total);
+    document.getElementById("o-usd").textContent = usd.format(total / 100);
+    var warn = document.getElementById("o-warn"), perDay = starts * perStart * 0.1;
+    if (cpp > limit && perDay > 0) {
+      warn.textContent = "Achtung: Jede Person braucht " + fmt.format(cpp) + " Credits, das Limit liegt bei " + fmt.format(limit) + ". Sie erreicht es am " + Math.ceil(limit / perDay) + ". Arbeitstag und kann die App danach nur mit «Request more» weiter nutzen.";
+      warn.hidden = false;
+    } else { warn.hidden = true; }
+  }
+  document.querySelectorAll("#calc input").forEach(function (i) { i.addEventListener("input", calc); });
+  calc();
+})();
+</script>
+</body>
+</html>
