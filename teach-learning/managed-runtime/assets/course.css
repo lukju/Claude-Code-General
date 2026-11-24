@@ -1,47 +1,51 @@
-/* Course stylesheet: Copilot Managed Runtime.
-   Layout: single reading column (~66ch), margin notes inline as sidenotes on wide screens. */
+/* OC-Design (Online Consulting AG, Manual Juli 2023): Future Berry als Leitfarbe, Classical Red für Punkte,
+   Autumn Plum für Flächen, Open Sans Light/Bold. Dark Mode und Feedback-Farben sind Ableitungen, nicht im Manual. */
 :root {
-  --bg: #f6f7f9;
-  --surface: #ffffff;
-  --ink: #17202b;
-  --muted: #5a6573;
-  --rule: #d9dee5;
-  --accent: #1f5fa8;
-  --accent-soft: #e3edf8;
+  --bg: #ffffff;
+  --surface: #fbf9fb;
+  --ink: #000000;
+  --muted: #5c4f5b;
+  --rule: #e4dde3;
+  --accent: #980043;
+  --accent-soft: #f6e8ee;
+  --red: #db141c;
+  --plum: #281923;
   --good: #1d7a4a;
-  --good-soft: #e2f3ea;
-  --bad: #b3372b;
-  --bad-soft: #f8e4e1;
-  --font-display: "Newsreader", Georgia, "Times New Roman", serif;
-  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --good-soft: #e6f2ec;
+  --bad: #443043;
+  --bad-soft: #efeaef;
+  --gradient: linear-gradient(90deg, #db141c 19%, #980043 43%);
+  --font-display: "Open Sans", "Segoe UI", "Source Sans 3", sans-serif;
+  --font-body: "Open Sans", "Segoe UI", "Source Sans 3", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #12161c; --surface: #1a2029; --ink: #e6eaf0; --muted: #9aa5b3; --rule: #2c3542;
-    --accent: #7fb0ea; --accent-soft: #1d2b3d; --good: #6fcf9b; --good-soft: #17301f;
-    --bad: #f08a7e; --bad-soft: #3a1d1a; color-scheme: dark;
+    --bg: #281923; --surface: #33222e; --ink: #f2eef1; --muted: #b1a2b0; --rule: #4a3747;
+    --accent: #e06a9a; --accent-soft: #3d2433; --red: #ff5a60; --plum: #f2eef1;
+    --good: #6fcf9b; --good-soft: #1c3326; --bad: #d9c6d6; --bad-soft: #443043; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #12161c; --surface: #1a2029; --ink: #e6eaf0; --muted: #9aa5b3; --rule: #2c3542;
-  --accent: #7fb0ea; --accent-soft: #1d2b3d; --good: #6fcf9b; --good-soft: #17301f;
-  --bad: #f08a7e; --bad-soft: #3a1d1a; color-scheme: dark;
+  --bg: #281923; --surface: #33222e; --ink: #f2eef1; --muted: #b1a2b0; --rule: #4a3747;
+  --accent: #e06a9a; --accent-soft: #3d2433; --red: #ff5a60; --plum: #f2eef1;
+  --good: #6fcf9b; --good-soft: #1c3326; --bad: #d9c6d6; --bad-soft: #443043; color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
 body {
   margin: 0; background: var(--bg); color: var(--ink);
-  font: 400 17px/1.65 var(--font-body);
+  font: 300 17px/1.65 var(--font-body);
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
 main { max-width: 44rem; margin: 0 auto; padding-block: 3rem 5rem; display: grid; gap: 2.5rem; }
 main > * { min-width: 0; }
 
-.eyebrow { font: 500 0.78rem/1.2 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-h1, h2, h3 { font-family: var(--font-display); font-weight: 500; text-wrap: balance; line-height: 1.15; margin: 0; }
-h1 { font-size: clamp(2.1rem, 5vw, 2.9rem); }
+.eyebrow { font: 700 0.76rem/1.2 var(--font-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 700; color: var(--accent); text-wrap: balance; line-height: 1.2; margin: 0; }
+strong, b, th { font-weight: 700; }
+h1 { font-size: clamp(1.9rem, 4.5vw, 2.6rem); }
 h2 { font-size: 1.6rem; }
 h3 { font-size: 1.2rem; }
 p { margin: 0; }
@@ -52,6 +56,7 @@ code { font: 0.88em var(--font-mono); background: var(--accent-soft); padding: 0
 .lede { font-size: 1.15rem; color: var(--muted); }
 .cite { font-size: 0.8rem; vertical-align: super; line-height: 0; text-decoration: none; }
 ul.tight { margin: 0; padding-left: 1.2rem; display: grid; gap: 0.4rem; }
+ul li::marker { color: var(--red); }
 
 .goal { border-left: 3px solid var(--accent); padding: 0.2rem 0 0.2rem 1rem; }
 .note { font-size: 0.9rem; color: var(--muted); }
@@ -60,7 +65,7 @@ ul.tight { margin: 0; padding-left: 1.2rem; display: grid; gap: 0.4rem; }
 .flow { display: grid; gap: 0.75rem; overflow-x: auto; }
 .flow .row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .flow .box { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 0.5rem 0.75rem; font-size: 0.9rem; }
-.flow .box strong { display: block; font-weight: 600; }
+.flow .box strong { display: block; font-weight: 700; }
 .flow .box span { color: var(--muted); font-size: 0.82rem; }
 .flow .host { border-color: var(--accent); background: var(--accent-soft); }
 .flow .arrow { color: var(--muted); font: 0.85rem var(--font-mono); padding-left: 0.5rem; }
@@ -69,12 +74,12 @@ ul.tight { margin: 0; padding-left: 1.2rem; display: grid; gap: 0.4rem; }
 table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
 .table-wrap { overflow-x: auto; }
 th, td { text-align: left; padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
-th { font: 500 0.75rem var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+th { font: 700 0.78rem var(--font-body); letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink); border-bottom: 2px solid var(--accent); }
 
 /* Quiz component (see quiz.js) */
 .quiz { display: grid; gap: 1.5rem; }
 .quiz-q { display: grid; gap: 0.6rem; }
-.quiz-q > p { font-weight: 600; }
+.quiz-q > p { font-weight: 700; }
 .opts { display: grid; gap: 0.4rem; }
 .opt {
   text-align: left; font: inherit; color: var(--ink); background: var(--surface);
@@ -85,11 +90,11 @@ th { font: 500 0.75rem var(--font-mono); letter-spacing: 0.06em; text-transform:
 .opt.correct { background: var(--good-soft); border-color: var(--good); }
 .opt.wrong { background: var(--bad-soft); border-color: var(--bad); }
 .explain { font-size: 0.92rem; color: var(--muted); }
-.score { font: 500 0.9rem var(--font-mono); color: var(--muted); }
+.score { font: 700 0.9rem var(--font-body); color: var(--muted); }
 
 /* Recall exercise */
 textarea { width: 100%; min-height: 8rem; font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 0.7rem; }
-.btn { font: 500 0.95rem var(--font-body); color: var(--bg); background: var(--accent); border: 0; border-radius: 6px; padding: 0.55rem 1rem; cursor: pointer; justify-self: start; }
+.btn { font: 700 0.95rem var(--font-body); color: var(--bg); background: var(--accent); border: 0; border-radius: 6px; padding: 0.55rem 1rem; cursor: pointer; justify-self: start; }
 .reveal { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 1rem; }
 
 .source { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.2rem; display: grid; gap: 0.4rem; }
@@ -116,7 +121,7 @@ input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .calc-out { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: 0.8rem; border-top: 1px solid var(--rule); padding-top: 1rem; }
 .calc-out div { display: grid; gap: 0.15rem; }
 .calc-out span { font-size: 0.78rem; color: var(--muted); }
-.calc-out strong { font: 500 1.35rem var(--font-display); font-variant-numeric: tabular-nums; }
+.calc-out strong { font: 700 1.35rem var(--font-display); color: var(--accent); font-variant-numeric: tabular-nums; }
 .warn { background: var(--bad-soft); border-left: 3px solid var(--bad); padding: 0.6rem 0.8rem; font-size: 0.92rem; }
 .formula { font: 0.95rem/1.6 var(--font-mono); background: var(--accent-soft); border-radius: 6px; padding: 0.8rem 1rem; overflow-x: auto; }
 
@@ -135,3 +140,8 @@ pre.cmd { font: 0.88rem/1.6 var(--font-mono); background: var(--accent-soft); bo
 .stage { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 0.8rem; display: grid; gap: 0.35rem; align-content: start; }
 .stage .eyebrow { color: var(--accent); }
 .stage p { font-size: 0.9rem; }
+
+/* OC-Design: Verlaufsband oben, vertikale Berry-Linie an Kästen */
+main > header { border-top: 6px solid transparent; border-image: var(--gradient) 1; padding-top: 1.2rem; }
+.reveal, .source { border-left: 2px solid var(--accent); }
+footer { border-top-color: var(--accent); }
