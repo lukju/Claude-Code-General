@@ -17,3 +17,9 @@ Status: offen (nicht abschliessend geklärt, Stand 23.11.2026)
 - Ein Community-Repo erwähnt «preview managed projects (`--target test|prod`)» mit CLI 0.27 ([GitHub](https://github.com/vademche/copilot-managed-runtime-skills)), in der offiziellen CLI-Referenz nicht gefunden.
 
 **Implications:** Bis zur Klärung als Annahme behandeln, nicht als Fakt. Klären über `ms app create --help` mit aktueller CLI, Microsoft-Support oder Community-Frage. Beim Klären diesen Record aktualisieren oder durch einen neuen ersetzen.
+
+**Nachtrag 26.11.2026 – Environment je Erstellungsweg:**
+- Cowork, Copilot Studio: standardmässig Personal Environment, keine dokumentierte Wahl ([Cowork](https://learn.microsoft.com/en-us/copilot/cowork/cowork-build-apps), [Studio](https://learn.microsoft.com/en-us/microsoft-copilot-studio/apps-experience/apps-overview)). Copilot Code: nicht dokumentiert.
+- CLI (`--environment-id`) und Lovable (Environment-ID in der Verbindung, vom Admin vergeben): anderes Environment wählbar ([Lovable](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/apps/configure-lovable?view=o365-worldwide)). Widerspricht teilweise der Lifecycle-Seite («only in the CLI»).
+- Routing bestimmt nur die Environment Group des Personal Environments und wer bauen darf, nicht ein gemeinsames Ziel-Environment.
+- Folge für die Annahme: Ein «Hochstufen» in ein gemeinsames Environment ist nur über die Pro-Code-Wege (CLI, Lovable) möglich, nicht für Apps aus Cowork oder Studio.
